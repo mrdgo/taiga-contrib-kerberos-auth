@@ -27,6 +27,8 @@ class KERBEROSLoginError(ConnectorBaseException):
 REALM = getattr(settings, "KRB5_REALM", "")
 ALLOWED_DOMAINS = getattr(settings, "KRB5_DOMAINS", "")
 DEFAULT_DOMAIN = getattr(settings, "KRB5_DEFAULT_DOMAIN", REALM)
+USER_SUFFIX = gettattr(settings, "KRB5_USER_SUFFIX", "")
+
 
 def login(email, password):
 
@@ -52,7 +54,7 @@ def login(email, password):
         raise KERBEROSLoginError({"error_message": errmsg})
 
     try:
-        kerberos.checkPassword(username, password, '', REALM)
+        kerberos.checkPassword(username + USER_SUFFIX, password, '', REALM)
     except kerberos.BasicAuthError as err:
         errmsg, _ = err.args
         if errmsg == "Cannot contact any KDC for requested realm":
